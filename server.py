@@ -1,3 +1,4 @@
+from asyncio import to_thread
 from time import strftime, localtime
 from typing import TypedDict, List, Dict
 
@@ -6,8 +7,7 @@ from xtquant.xtdata import (
     download_history_data,
     get_market_data_ex,
     get_stock_list_in_sector,
-    get_sector_list,
-    get_trading_calendar
+    get_sector_list
 )
 from pandas import DataFrame
 from mcp.server.fastmcp import FastMCP
@@ -78,7 +78,7 @@ class InstrumentDetail(TypedDict):
 
 
 @mcp.tool()
-def get_instrument_detail_tool(stock_code: str) -> str:
+async def get_instrument_detail_tool(stock_code: str) -> str:
     """
     Retrieve detailed information about a financial instrument.
 
@@ -91,15 +91,17 @@ def get_instrument_detail_tool(stock_code: str) -> str:
             If an error occurs, returns an error message describing the issue.
     """
     try:
-        instrument_detail: InstrumentDetail = get_instrument_detail(
-            stock_code=stock_code)
+        instrument_detail: InstrumentDetail = await to_thread(
+            get_instrument_detail,
+            stock_code=stock_code
+        )
         return str(instrument_detail)
     except Exception as e:
         return f"Error: {str(e)}"
 
 
 @mcp.tool()
-def download_history_data_tool(
+async def download_history_data_tool(
         stock_code: str,
         period: str = '1d',
         start_time: str = '',
@@ -137,7 +139,8 @@ def download_history_data_tool(
             If an error occurs, returns an error message describing the issue.
     """
     try:
-        download_history_data(
+        await to_thread(
+            download_history_data,
             stock_code=stock_code,
             period=period,
             start_time=start_time,
@@ -150,7 +153,7 @@ def download_history_data_tool(
 
 
 @mcp.tool()
-def get_market_data_ex_tool(
+async def get_market_data_ex_tool(
     stock_list: List[str],
     field_list: List[str] = [],
     period: str = '1d',
@@ -161,7 +164,7 @@ def get_market_data_ex_tool(
     fill_data: bool = True
 ) -> str:
     """
-    Retrieve market data for a list of stocks.
+    Retrieve market data for a list of stocks. Please call download_history_data_tool first to download the data.
 
     Args:
         stock_list (List[str]): A list of stock codes to retrieve data for. 
@@ -218,7 +221,8 @@ def get_market_data_ex_tool(
              If an error occurs, returns an error message describing the issue.
     """
     try:
-        market_data: Dict[str, DataFrame] = get_market_data_ex(
+        market_data: Dict[str, DataFrame] = await to_thread(
+            get_market_data_ex,
             field_list=field_list,
             stock_list=stock_list,
             period=period,
@@ -238,7 +242,7 @@ def get_market_data_ex_tool(
 
 
 @mcp.tool()
-def get_current_time_tool() -> str:
+async def get_current_time_tool() -> str:
     """
     Get the current time in 'yyyyMMddHHmmss' format.
 
@@ -247,13 +251,17 @@ def get_current_time_tool() -> str:
              If an error occurs, returns an error message describing the issue.
     """
     try:
-        return strftime("%Y%m%d%H%M%S", localtime())
+        return await to_thread(
+            strftime,
+            "%Y%m%d%H%M%S",
+            localtime()
+        )
     except Exception as e:
         return f"Error: {str(e)}"
 
 
 @mcp.tool()
-def get_stock_list_in_sector_tool(sector_name: str) -> str:
+async def get_stock_list_in_sector_tool(sector_name: str) -> str:
     """
     Retrieve a list of stocks within a specific sector.
 
@@ -268,15 +276,17 @@ def get_stock_list_in_sector_tool(sector_name: str) -> str:
              If an error occurs, returns an error message describing the issue.
     """
     try:
-        stock_list: List[str] = get_stock_list_in_sector(
-            sector_name=sector_name)
+        stock_list: List[str] = await to_thread(
+            get_stock_list_in_sector,
+            sector_name=sector_name
+        )
         return str(stock_list)
     except Exception as e:
         return f"Error: {str(e)}"
 
 
 @mcp.tool()
-def get_sector_list_tool() -> str:
+async def get_sector_list_tool() -> str:
     """
     Retrieve a list of available sectors.
 
@@ -287,28 +297,11 @@ def get_sector_list_tool() -> str:
     """
 
     try:
-        sector_list: List[str] = get_sector_list()
+        sector_list: List[str] = await to_thread(get_sector_list)
         return str(sector_list)
     except Exception as e:
         return f"Error: {str(e)}"
 
 
-@mcp.tool()
-def get_trading_calendar_tool() -> str:
-    """
-    Retrieve the trading calendar.
-
-    Returns:
-        str: A JSON-like string representation of the trading calendar.
-             If successful, returns a list of trading dates as a string.
-             If an error occurs, returns an error message describing the issue.
-    """
-    try:
-        trading_calendar: List[str] = get_trading_calendar()
-        return str(trading_calendar)
-    except Exception as e:
-        return f"Error: {str(e)}"
-
-
 if __name__ == "__main__":
-    mcp.run()
+    mcp.run(transport="stdio")
