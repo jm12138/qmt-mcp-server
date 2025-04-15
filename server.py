@@ -5,9 +5,7 @@ from typing import TypedDict, List, Dict
 from xtquant.xtdata import (
     get_instrument_detail,
     download_history_data,
-    get_market_data_ex,
-    get_stock_list_in_sector,
-    get_sector_list
+    get_market_data_ex
 )
 from pandas import DataFrame
 from mcp.server.fastmcp import FastMCP
@@ -240,7 +238,7 @@ async def get_market_data_ex_tool(
             dividend_type=dividend_type,
             fill_data=fill_data
         )
-        market_data = await to_thread(convert_market_data, market_data=market_data)
+        market_data: Dict[str, List[Dict]] = await to_thread(convert_market_data, market_data=market_data)
         return str(market_data)
     except Exception as e:
         return f"Error: {str(e)}"
@@ -263,50 +261,6 @@ async def get_current_time_tool() -> str:
         )
     except Exception as e:
         return f"Error: {str(e)}"
-
-
-@mcp.tool()
-async def get_stock_list_in_sector_tool(sector_name: str) -> str:
-    """
-    Retrieve a list of stocks within a specific sector.
-
-    Args:
-        sector_name (str): The name of the sector to query.
-                           Example: '沪深A股' for Shanghai and Shenzhen A-shares.
-                           Use `get_sector_list_tool` to retrieve available sector names.
-
-    Returns:
-        str: A JSON-like string representation of the stock list in the specified sector.
-             If successful, returns a list of stock codes as a string.
-             If an error occurs, returns an error message describing the issue.
-    """
-    try:
-        stock_list: List[str] = await to_thread(
-            get_stock_list_in_sector,
-            sector_name=sector_name
-        )
-        return str(stock_list)
-    except Exception as e:
-        return f"Error: {str(e)}"
-
-
-@mcp.tool()
-async def get_sector_list_tool() -> str:
-    """
-    Retrieve a list of available sectors.
-
-    Returns:
-        str: A JSON-like string representation of the available sectors.
-             If successful, returns a list of sector names as a string.
-             If an error occurs, returns an error message describing the issue.
-    """
-
-    try:
-        sector_list: List[str] = await to_thread(get_sector_list)
-        return str(sector_list)
-    except Exception as e:
-        return f"Error: {str(e)}"
-
 
 if __name__ == "__main__":
     mcp.run(transport="stdio")

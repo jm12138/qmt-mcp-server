@@ -8,8 +8,7 @@
 
 - 获取股票详细信息
 - 下载股票历史数据
-- 查询市场数据
-- 获取行业板块列表及成分股
+- 查询股票市场数据
 
 
 ## 工具函数
@@ -18,5 +17,3 @@
 - `get_instrument_detail_tool`: 获取股票的详细信息
 - `download_history_data_tool`: 下载特定股票的历史市场数据
 - `get_market_data_ex_tool`: 获取多只股票的市场数据
-- `get_stock_list_in_sector_tool`: 获取特定板块内的股票列表
-- `get_sector_list_tool`: 获取可用板块列表
