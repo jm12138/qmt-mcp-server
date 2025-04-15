@@ -13,7 +13,7 @@ from pandas import DataFrame
 from mcp.server.fastmcp import FastMCP
 
 
-mcp = FastMCP("qmt-mcp-server", dependencies=["pandas"])
+mcp = FastMCP("qmt-mcp-server", dependencies=["pandas", "xtquant"])
 
 
 class InstrumentDetail(TypedDict):
