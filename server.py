@@ -308,3 +308,7 @@ def get_trading_calendar_tool() -> str:
         return str(trading_calendar)
     except Exception as e:
         return f"Error: {str(e)}"
+
+
+if __name__ == "__main__":
+    mcp.run()
