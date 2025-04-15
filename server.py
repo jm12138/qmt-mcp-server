@@ -147,14 +147,22 @@ async def download_history_data_tool(
             end_time=end_time,
             incrementally=incrementally
         )
-        return f"Historical data for {stock_code} downloaded successfully. Use get_market_data_ex_tool to retrieve the data."
+        return f"Historical data for {stock_code} downloaded successfully. Please use get_market_data_ex function to get the market data."
     except Exception as e:
         return f"Error: {str(e)}"
 
 
+def convert_market_data(market_data: Dict[str, DataFrame]) -> Dict[str, List[Dict]]:
+    for stock_code in market_data.keys():
+        market_data[stock_code].index.name = 'date'
+        market_data[stock_code] = market_data[stock_code].reset_index().to_dict(
+            orient='records', index=True)
+    return market_data
+
+
 @mcp.tool()
 async def get_market_data_ex_tool(
-    stock_list: List[str],
+    stock_list: List[str] = [],
     field_list: List[str] = [],
     period: str = '1d',
     start_time: str = '',
@@ -164,7 +172,7 @@ async def get_market_data_ex_tool(
     fill_data: bool = True
 ) -> str:
     """
-    Retrieve market data for a list of stocks. Please call download_history_data_tool first to download the data.
+    Retrieve market data for a list of stocks. Please make sure you have downloaded the data using download_history_data function.
 
     Args:
         stock_list (List[str]): A list of stock codes to retrieve data for. 
@@ -232,10 +240,7 @@ async def get_market_data_ex_tool(
             dividend_type=dividend_type,
             fill_data=fill_data
         )
-        for stock_code in market_data.keys():
-            market_data[stock_code].index.name = 'date'
-            market_data[stock_code] = market_data[stock_code].reset_index().to_dict(
-                orient='records', index=True)
+        market_data = await to_thread(convert_market_data, market_data=market_data)
         return str(market_data)
     except Exception as e:
         return f"Error: {str(e)}"
