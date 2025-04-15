@@ -13,7 +13,7 @@
 - 获取交易日历
 
 
-## 可用工具函数
+## 工具函数
 
 - `get_current_time`: 获取当前时间
 - `get_instrument_detail_tool`: 获取金融工具的详细信息
