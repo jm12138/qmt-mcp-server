@@ -238,7 +238,7 @@ def get_market_data_ex_tool(
 
 
 @mcp.tool()
-def get_current_time() -> str:
+def get_current_time_tool() -> str:
     """
     Get the current time in 'yyyyMMddHHmmss' format.
 
