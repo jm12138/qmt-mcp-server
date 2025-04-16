@@ -1,6 +1,6 @@
-from .server import mcp_server
+from .server import mcp
 
 
 def run():
     """Run the MCP server."""
-    mcp_server.run(transport="stdio")
+    mcp.run(transport="stdio")

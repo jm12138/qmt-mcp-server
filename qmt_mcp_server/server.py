@@ -11,7 +11,7 @@ from pandas import DataFrame
 from mcp.server.fastmcp import FastMCP
 
 
-mcp_server = FastMCP("qmt-mcp-server", dependencies=["pandas", "xtquant"])
+mcp = FastMCP("qmt-mcp-server", dependencies=["pandas", "xtquant"])
 
 
 class InstrumentDetail(TypedDict):
@@ -75,7 +75,7 @@ class InstrumentDetail(TypedDict):
     IsRecent: bool
 
 
-@mcp_server.tool()
+@mcp.tool()
 async def get_instrument_detail_tool(stock_code: str) -> str:
     """
     Retrieve detailed information about a financial instrument.
@@ -98,7 +98,7 @@ async def get_instrument_detail_tool(stock_code: str) -> str:
         return f"Error: {str(e)}"
 
 
-@mcp_server.tool()
+@mcp.tool()
 async def download_history_data_tool(
         stock_code: str,
         period: str = '1d',
@@ -158,7 +158,7 @@ def convert_market_data(market_data: Dict[str, DataFrame]) -> Dict[str, List[Dic
     return market_data
 
 
-@mcp_server.tool()
+@mcp.tool()
 async def get_market_data_ex_tool(
     stock_list: List[str] = [],
     field_list: List[str] = [],
@@ -244,7 +244,7 @@ async def get_market_data_ex_tool(
         return f"Error: {str(e)}"
 
 
-@mcp_server.tool()
+@mcp.tool()
 async def get_current_time_tool() -> str:
     """
     Get the current time in 'yyyyMMddHHmmss' format.
@@ -263,4 +263,4 @@ async def get_current_time_tool() -> str:
         return f"Error: {str(e)}"
 
 if __name__ == "__main__":
-    mcp_server.run(transport="stdio")
+    mcp.run(transport="stdio")
