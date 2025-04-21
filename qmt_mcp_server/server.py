@@ -5,6 +5,7 @@ from typing import TypedDict, List, Dict
 from xtquant.xtdata import (
     get_instrument_detail,
     download_history_data,
+    download_history_data2,
     get_market_data_ex
 )
 from pandas import DataFrame
@@ -146,6 +147,58 @@ async def download_history_data_tool(
             incrementally=incrementally
         )
         return f"Historical data for {stock_code} downloaded successfully. Please use get_market_data_ex function to get the market data."
+    except Exception as e:
+        return f"Error: {str(e)}"
+
+
+@mcp.tool()
+async def download_history_data2_tool(
+        stock_list: List[str],
+        period: str = '1d',
+        start_time: str = '',
+        end_time: str = '',
+        incrementally: bool = True) -> str:
+    """
+    Download historical market data for a list of stocks.
+
+    Args:
+        stock_list (List[str]): A list of stock codes to download data for.
+                                Example: ['000001.SZ', '000002.SZ'].
+        period (str, optional): The time interval for the historical data. 
+                                Supported values:
+                                - "tick": Tick interval
+                                - "1m": 1-minute interval
+                                - "5m": 5-minute interval
+                                - "15m": 15-minute interval
+                                - "30m": 30-minute interval
+                                - "1h": 1-hour interval
+                                - "1d": Daily interval (default)
+                                - "1w": Weekly interval
+                                - "1mon": Monthly interval
+                                - "1q": Quarterly interval
+                                - "1hy": Semi-annual interval
+                                - "1y": Annual interval.
+        start_time (str, optional): The start date/time for the historical data in 'yyyyMMdd' or 'yyyyMMddHHmmss' format. 
+                                    Leave empty to fetch data from the earliest available date. Default is ''.
+        end_time (str, optional): The end date/time for the historical data in 'yyyyMMdd' or 'yyyyMMddHHmmss' format. 
+                                    Leave empty to fetch data up to the latest available date. Default is ''.
+        incrementally (bool, optional): If True, only download data that has changed since the last download.
+                                        If False, download all available data. Default is True.
+
+    Returns:
+        str: A success message if the data is downloaded successfully.
+            If an error occurs, returns an error message describing the issue.
+    """
+    try:
+        await to_thread(
+            download_history_data2,
+            stock_list=stock_list,
+            period=period,
+            start_time=start_time,
+            end_time=end_time,
+            incrementally=incrementally
+        )
+        return f"Historical data for {stock_list} downloaded successfully. Please use get_market_data_ex function to get the market data."
     except Exception as e:
         return f"Error: {str(e)}"
 
