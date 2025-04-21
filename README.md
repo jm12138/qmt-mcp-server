@@ -15,6 +15,7 @@
 - `get_current_time_tool`: 获取当前时间
 - `get_instrument_detail_tool`: 获取股票的详细信息
 - `download_history_data_tool`: 下载特定股票的历史市场数据
+- `download_history_data2_tool`: 下载多只股票的历史市场数据
 - `get_market_data_ex_tool`: 获取多只股票的市场数据
 
 ## 样例展示
