@@ -13,7 +13,8 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'qmt-mcp-server=qmt_mcp_server:run',
+            'qmt_mcp_server_stdio=qmt_mcp_server:stdio',
+            'qmt_mcp_server_sse=qmt_mcp_server:sse',
         ],
     },
     classifiers=[

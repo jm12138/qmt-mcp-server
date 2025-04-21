@@ -12,7 +12,10 @@ from pandas import DataFrame
 from mcp.server.fastmcp import FastMCP
 
 
-mcp = FastMCP("qmt-mcp-server", dependencies=["pandas", "xtquant"])
+mcp = FastMCP(
+    "qmt-mcp-server",
+    dependencies=["pandas", "xtquant"]
+)
 
 
 class InstrumentDetail(TypedDict):
@@ -314,6 +317,3 @@ async def get_current_time_tool() -> str:
         )
     except Exception as e:
         return f"Error: {str(e)}"
-
-if __name__ == "__main__":
-    mcp.run(transport="stdio")
