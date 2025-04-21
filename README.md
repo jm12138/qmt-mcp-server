@@ -208,13 +208,13 @@
 
 3. 启动 MCP 服务器
 
-    1. stdio 模式
+    1. stdio 模式 (适用于本地使用)
 
         ```bash
         $ qmt_mcp_server_stdio
         ```
 
-    2. sse 模式
+    2. sse 模式 (适用于服务器部署)
 
         ```bash
         $ qmt_mcp_server_sse --host 0.0.0.0 --port 8000
