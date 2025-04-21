@@ -206,18 +206,53 @@
 2. 启动 QMT 或 MiniQMT 客户端
 
 
-3. 编辑客户端配置文件
+3. 启动 MCP 服务器
 
-    ```json
-    {
-        "servers": {
-            "qmt-mcp-server": {
-                "type": "stdio",
-                "command": "qmt-mcp-server"
+    1. stdio 模式
+
+        ```bash
+        $ qmt_mcp_server_stdio
+        ```
+
+    2. sse 模式
+
+        ```bash
+        $ qmt_mcp_server_sse --host 0.0.0.0 --port 8000
+        ```
+
+4. 客户端配置
+
+    1. Claude Desktop
+
+        ```json
+        {
+            "mcpServers": {
+                "qmt-mcp-server": {
+                    "command": "qmt_mcp_server_stdio"
+                }
             }
         }
-    }
-    ```
+        ```
 
-4. 启动客户端使用
+    2. VS Code
 
+        ```json
+        {
+            "servers": {
+                "qmt-mcp-server": {
+                    "command": "qmt_mcp_server_stdio"
+                }
+            }
+        }
+        ```
+
+        ```json
+        {
+            "servers": {
+                "qmt-mcp-server": {
+                    "type": "sse",
+                    "url": "http://0.0.0.0:8000/sse",
+                }
+            }
+        }
+        ```
